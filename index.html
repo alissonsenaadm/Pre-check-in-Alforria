@@ -12,6 +12,7 @@
 </head>
 <body><div class="wrap"><header><h1>POUSADA ALFORRIA – PRÉ-CHECK-IN</h1><p>Preencha todos os campos, finalize e copie os dados para o check-in.</p></header><main>
 <form autocomplete="on" id="formulario">
+<div class="field" style="margin:0 0 24px"><label for="responsavelReserva">Insira o nome de quem fez a reserva:</label><input id="responsavelReserva" name="responsavelReserva" type="text" autocomplete="name" placeholder="Nome completo de quem fez a reserva" required=""/></div>
 <fieldset class="section"><legend>Dados pessoais e contato</legend><div class="grid">
 <div class="field"><label for="nome">Nome</label><input autocomplete="given-name" id="nome" required=""/></div>
 <div class="field"><label for="sobrenome">Sobrenome</label><input autocomplete="family-name" id="sobrenome" required=""/></div>
@@ -48,7 +49,7 @@
 
 </main></div>
 <script>(()=>{'use strict';
-const campos=[['Nome','nome'],['Sobrenome','sobrenome'],['E-mail','email'],['Telefone','telefone'],['Celular','celular'],['Data de nascimento','nascimento'],['Gênero','genero'],['Nacionalidade','nacionalidade'],['Raça','raca'],['Possui uma necessidade especial?','necessidade'],['Necessidades especiais','especiais'],['Motivo da viagem','motivo'],['Meio de transporte','transporte'],['Endereço','endereco'],['Complemento','complemento'],['País','pais'],['Estado','estado'],['Cidade','cidade'],['CEP (código postal)','cep'],['Bairro','bairro'],['Tipo de documento','tipoDocumento'],['Número do documento','numeroDocumento'],['País de emissão do documento','paisEmissao']];
+const campos=[['Insira o nome de quem fez a reserva','responsavelReserva'],['Nome','nome'],['Sobrenome','sobrenome'],['E-mail','email'],['Telefone','telefone'],['Celular','celular'],['Data de nascimento','nascimento'],['Gênero','genero'],['Nacionalidade','nacionalidade'],['Raça','raca'],['Possui uma necessidade especial?','necessidade'],['Necessidades especiais','especiais'],['Motivo da viagem','motivo'],['Meio de transporte','transporte'],['Endereço','endereco'],['Complemento','complemento'],['País','pais'],['Estado','estado'],['Cidade','cidade'],['CEP (código postal)','cep'],['Bairro','bairro'],['Tipo de documento','tipoDocumento'],['Número do documento','numeroDocumento'],['País de emissão do documento','paisEmissao']];
 const el=id=>document.getElementById(id), form=el('formulario');
 let finalizado=false, textoFinal='', temporizadorEnvio=null;
 function mensagem(texto,erro=false){const s=el('status');s.textContent=texto;s.className=erro?'erro':'sucesso';}
