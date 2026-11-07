@@ -100,7 +100,7 @@ function mostrarCopiaManual(){
  if(!painel){painel=document.createElement('div');painel.id='copia-manual';painel.style.cssText='margin:16px 0;padding:16px;border:1px solid #b9c8d6;border-radius:9px;background:#f7f9fc';
  const titulo=document.createElement('p');titulo.textContent='O navegador bloqueou a cópia automática. Selecione o texto abaixo e copie antes de abrir o WhatsApp.';
  const area=document.createElement('textarea');area.id='texto-manual';area.readOnly=true;area.style.cssText='width:100%;height:180px';
- const botao=document.createElement('button');botao.type='button';botao.className='primary';botao.textContent='Abrir WhatsApp';botao.addEventListener('click',()=>window.open('https://wa.me/5522996090656','_blank'));
+ const botao=document.createElement('button');botao.type='button';botao.className='primary';botao.textContent='Abrir WhatsApp';botao.addEventListener('click',()=>window.open('https://wa.me/5522992271509','_blank'));
  painel.append(titulo,area,botao);el('status').after(painel);}
  el('texto-manual').value=textoFinal;el('texto-manual').focus();el('texto-manual').select();
 }
@@ -112,7 +112,7 @@ el('copiar').addEventListener('click',()=>{
    return;
  }
  mensagem('Dados copiados! Cole a mensagem na conversa do WhatsApp e toque em Enviar.');
- window.location.assign('https://wa.me/5522996090656');
+ window.location.assign('https://wa.me/5522992271509');
 });
 form.querySelectorAll('input,select').forEach(e=>e.addEventListener('input',()=>{const box=e.closest('.field');if(box){box.classList.remove('invalido');box.querySelectorAll('.campo-erro').forEach(x=>x.remove());}}));
 travar(false);atualizarEspeciais();
