@@ -50,7 +50,7 @@
 <script>(()=>{'use strict';
 const campos=[['Nome','nome'],['Sobrenome','sobrenome'],['E-mail','email'],['Telefone','telefone'],['Celular','celular'],['Data de nascimento','nascimento'],['Gênero','genero'],['Nacionalidade','nacionalidade'],['Raça','raca'],['Possui uma necessidade especial?','necessidade'],['Necessidades especiais','especiais'],['Motivo da viagem','motivo'],['Meio de transporte','transporte'],['Endereço','endereco'],['Complemento','complemento'],['País','pais'],['Estado','estado'],['Cidade','cidade'],['CEP (código postal)','cep'],['Bairro','bairro'],['Tipo de documento','tipoDocumento'],['Número do documento','numeroDocumento'],['País de emissão do documento','paisEmissao']];
 const el=id=>document.getElementById(id), form=el('formulario');
-let finalizado=false, textoFinal='', temporizadorEnvio=null, copiaConfirmada=false;
+let finalizado=false, textoFinal='', temporizadorEnvio=null;
 function mensagem(texto,erro=false){const s=el('status');s.textContent=texto;s.className=erro?'erro':'sucesso';}
 function atualizarEspeciais(){const sim=el('necessidade').value==='Sim';el('bloco-especiais').hidden=!sim;el('especiais').disabled=!sim||finalizado;el('especiais').required=sim;if(!sim&&!finalizado)el('especiais').value='';}
 function dataFormatada(iso){if(!iso)return '';const [ano,mes,dia]=iso.split('-');return `${dia}/${mes}/${ano}`;}
@@ -61,58 +61,27 @@ function gerarTexto(){return ['POUSADA ALFORRIA - PRÉ-CHECK-IN','',...campos.ma
 function travar(travado){finalizado=travado;form.querySelectorAll('input,select,textarea').forEach(e=>e.disabled=travado);el('corrigir').disabled=!travado;el('finalizar').disabled=travado;el('copiar').hidden=true;if(!travado)atualizarEspeciais();}
 el('necessidade').addEventListener('change',atualizarEspeciais);
 form.addEventListener('submit',e=>e.preventDefault());
-el('finalizar').addEventListener('click',async()=>{
+el('finalizar').addEventListener('click',()=>{
  const faltantes=validar();
  if(faltantes.length){mensagem(`Não foi possível finalizar. ${faltantes.length===1?'Falta preencher o campo':'Faltam preencher os campos'}: ${faltantes.join(', ')}.`,true);el(campos.find(([rotulo])=>rotulo===faltantes[0])[1]).focus();return;}
  textoFinal=gerarTexto();travar(true);
- // Copiar durante o clique em Finalizar, quando o navegador permite acesso à área de transferência.
- copiaConfirmada=copiarSincrono(textoFinal);
- if(!copiaConfirmada && navigator.clipboard && window.isSecureContext){
-   try{await navigator.clipboard.writeText(textoFinal);copiaConfirmada=true;}catch(e){}
- }
- if(!finalizado)return; // O usuário pode ter escolhido Corrigir enquanto aguardava.
- if(!copiaConfirmada){
-   mensagem('Não foi possível copiar automaticamente. Copie o texto abaixo antes de enviar.',true);
-   mostrarCopiaManual();
- }else{
-   const painel=el('copia-manual');if(painel)painel.remove();
-   mensagem('Formulário finalizado e copiado! Aguarde 2 segundos para enviar pelo WhatsApp.');
- }
+ mensagem('Formulário finalizado! Aguarde 2 segundos para enviar pelo WhatsApp.');
+ clearTimeout(temporizadorEnvio);
  temporizadorEnvio=setTimeout(()=>{
-   if(!finalizado)return;
-   el('copiar').hidden=false;
-   mensagem(copiaConfirmada?'Dados copiados! Clique em Enviar formulário, cole no WhatsApp e envie.':'Clique em Enviar formulário após copiar manualmente o texto exibido.',!copiaConfirmada);
+  if(!finalizado)return;
+  el('copiar').hidden=false;
+  mensagem('Clique em Enviar formulário. O WhatsApp abrirá com os dados preenchidos; basta confirmar o envio.');
  },2000);
 });
 el('corrigir').addEventListener('click',()=>{
- clearTimeout(temporizadorEnvio);temporizadorEnvio=null;copiaConfirmada=false;
- const painel=el('copia-manual');if(painel)painel.remove();
+ clearTimeout(temporizadorEnvio);temporizadorEnvio=null;
  travar(false);textoFinal='';limparErros();mensagem('Formulário liberado para correções. Finalize novamente após editar.');
 });
-function copiarSincrono(texto){
- const area=document.createElement('textarea');area.value=texto;
- area.setAttribute('readonly','');area.style.cssText='position:fixed;left:0;top:0;width:1px;height:1px;opacity:0;z-index:-1';
- document.body.append(area);area.focus();area.select();area.setSelectionRange(0,area.value.length);
- let ok=false;try{ok=document.execCommand('copy');}catch(e){}area.remove();return ok;
-}
-function mostrarCopiaManual(){
- let painel=el('copia-manual');
- if(!painel){painel=document.createElement('div');painel.id='copia-manual';painel.style.cssText='margin:16px 0;padding:16px;border:1px solid #b9c8d6;border-radius:9px;background:#f7f9fc';
- const titulo=document.createElement('p');titulo.textContent='O navegador bloqueou a cópia automática. Selecione o texto abaixo e copie antes de abrir o WhatsApp.';
- const area=document.createElement('textarea');area.id='texto-manual';area.readOnly=true;area.style.cssText='width:100%;height:180px';
- const botao=document.createElement('button');botao.type='button';botao.className='primary';botao.textContent='Abrir WhatsApp';botao.addEventListener('click',()=>window.open('https://wa.me/5522992271509','_blank'));
- painel.append(titulo,area,botao);el('status').after(painel);}
- el('texto-manual').value=textoFinal;el('texto-manual').focus();el('texto-manual').select();
-}
 el('copiar').addEventListener('click',()=>{
  if(!finalizado || el('copiar').hidden)return;
- if(!copiaConfirmada){
-   mensagem('A cópia automática foi bloqueada. Copie os dados exibidos antes de abrir o WhatsApp.',true);
-   mostrarCopiaManual();
-   return;
- }
- mensagem('Dados copiados! Cole a mensagem na conversa do WhatsApp e toque em Enviar.');
- window.location.assign('https://wa.me/5522992271509');
+ const url='https://wa.me/5522996090656?text='+encodeURIComponent(textoFinal);
+ mensagem('Abrindo WhatsApp com os dados preenchidos. Confira a mensagem e toque em Enviar.');
+ window.location.assign(url);
 });
 form.querySelectorAll('input,select').forEach(e=>e.addEventListener('input',()=>{const box=e.closest('.field');if(box){box.classList.remove('invalido');box.querySelectorAll('.campo-erro').forEach(x=>x.remove());}}));
 travar(false);atualizarEspeciais();
